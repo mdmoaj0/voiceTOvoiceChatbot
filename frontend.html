@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Chatbot UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+       
+        .main {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+
+      
+        video {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: transform 0.3s ease-in-out, opacity 0.5s ease-in-out;
+            border: 3px solid transparent;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        
+        video:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        
+        @keyframes pulse {
+            0% {
+                border-color: rgba(0, 123, 255, 0.3);
+            }
+            100% {
+                border-color: rgba(0, 123, 255, 1);
+            }
+        }
+
+        
+        .chatbot-btn {
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            animation: bounce 2s infinite;
+        }
+
+        
+        .chatbot-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        
+        .chatbot-btn i {
+            font-size: 24px;
+        }
+
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        
+        .country {
+            position: relative;
+        }
+
+        .country-selector {
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .current-flag {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+        }
+
+        .flags-dropdown {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            margin-bottom: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .flags-dropdown.show {
+            display: flex;
+        }
+
+        .flag-item img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .flag-item:hover img {
+            transform: scale(1.15);
+        }
+
+        .country-selector {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.country-selector:hover {
+    transform: scale(1.1);
+}
+
+.current-flag {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Add these new styles for speaking animation */
+.speaking {
+    animation: speaking 1s ease-in-out infinite;
+}
+
+@keyframes speaking {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Add styles for recording animation */
+.recording {
+    background-color: #dc3545 !important;
+    animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Audio Wave Animation Styles */
+.wave-container {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.wave-container.active {
+    display: flex;
+}
+
+.wave-bar {
+    width: 3px;
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 3px;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { height: 20%; }
+    50% { height: 100%; }
+}
+    </style>
+</head>
+<body>
+
+    <div class="main">
+        <video autoplay loop muted>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            <div class="wave-container">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </video>
+
+        <button class="chatbot-btn">
+            <i class="fa fa-microphone"></i>
+        </button>
+
+        <div class="country">
+            <button class="country-selector" id="flagToggle">
+                <img src="https://flagcdn.com/w40/us.png" alt="Current Flag" class="current-flag">
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flagToggle = document.getElementById('flagToggle');
+            const countryDiv = document.querySelector('.country');
+            const currentFlag = document.querySelector('.current-flag');
+            
+            const flags = [
+                { src: 'https://flagcdn.com/w40/us.png', alt: 'USA' },
+                { src: 'https://flagcdn.com/w40/gb.png', alt: 'UK' },
+                { src: 'https://flagcdn.com/w40/in.png', alt: 'India' },
+                { src: 'https://flagcdn.com/w40/de.png', alt: 'Germany' }
+            ];
+        
+            flagToggle.addEventListener('click', () => {
+                const existingDropdown = document.querySelector('.flags-dropdown');
+                if (existingDropdown) {
+                    existingDropdown.remove();
+                    return;
+                }
+
+                const dropdown = document.createElement('div');
+                dropdown.className = 'flags-dropdown show';
+
+                flags.forEach(flag => {
+                    const flagItem = document.createElement('div');
+                    flagItem.className = 'flag-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = flag.src;
+                    img.alt = flag.alt;
+                    
+                    img.addEventListener('click', () => {
+                        currentFlag.src = flag.src;
+                        dropdown.remove();
+                    });
+
+                    flagItem.appendChild(img);
+                    dropdown.appendChild(flagItem);
+                });
+
+                countryDiv.appendChild(dropdown);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.country')) {
+                    const dropdown = document.querySelector('.flags-dropdown');
+                    if (dropdown) dropdown.remove();
+                }
+            });
+
+            const ws = new WebSocket('ws://localhost:8000/ws');
+            const chatbotBtn = document.querySelector('.chatbot-btn');
+            const micIcon = chatbotBtn.querySelector('i');
+            const video = document.querySelector('video');
+            let mediaRecorder;
+            let audioChunks = [];
+            let isRecording = false;
+            let isContinuousMode = false;
+            let isAISpeaking = false;
+
+            ws.onopen = () => {
+                console.log('Connected to WebSocket server');
+            };
+
+            function startRecording() {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+
+                        mediaRecorder.ondataavailable = (event) => {
+                            audioChunks.push(event.data);
+                        };
+
+                        mediaRecorder.onstop = () => {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                            ws.send(audioBlob);
+                        };
+
+                        // Start recording
+                        mediaRecorder.start();
+                        isRecording = true;
+                        chatbotBtn.classList.add('recording');
+                        micIcon.classList.remove('fa-microphone');
+                        micIcon.classList.add('fa-stop');
+
+                        // Automatically stop recording after 5 seconds
+                        setTimeout(() => {
+                            if (isRecording && isContinuousMode) {
+                                stopRecording();
+                            }
+                        }, 5000); // 5 seconds recording time
+                    })
+                    .catch(err => {
+                        console.error('Error accessing microphone:', err);
+                    });
+            }
+
+            function stopRecording() {
+                if (mediaRecorder && isRecording) {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    chatbotBtn.classList.remove('recording');
+                    micIcon.classList.remove('fa-stop');
+                    micIcon.classList.add('fa-microphone');
+                }
+            }
+
+            ws.onmessage = async (event) => {
+                const response = JSON.parse(event.data);
+                const waveContainer = document.querySelector('.wave-container');
+                
+                if (response.type === 'message') {
+                    console.log('Received message:', response.data);
+                } else if (response.type === 'audio') {
+                    isAISpeaking = true;
+                    
+                    // Convert base64 to audio and play it
+                    const audioData = atob(response.data);
+                    const arrayBuffer = new Uint8Array(audioData.length);
+                    for (let i = 0; i < audioData.length; i++) {
+                        arrayBuffer[i] = audioData.charCodeAt(i);
+                    }
+                    
+                    const audioBlob = new Blob([arrayBuffer], { type: 'audio/mp3' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    
+                    // Add speaking animation and wave animation
+                    video.classList.add('speaking');
+                    waveContainer.classList.add('active');
+                    
+                    audio.onended = () => {
+                        video.classList.remove('speaking');
+                        waveContainer.classList.remove('active');
+                        isAISpeaking = false;
+
+                        // If in continuous mode, start recording again after AI finishes speaking
+                        if (isContinuousMode && !isRecording) {
+                            setTimeout(() => {
+                                startRecording();
+                            }, 1000); // Wait 1 second before starting next recording
+                        }
+                    };
+                    
+                    audio.play();
+                }
+            };
+
+            chatbotBtn.addEventListener('click', () => {
+                if (!isContinuousMode) {
+                    // Start continuous mode
+                    isContinuousMode = true;
+                    startRecording();
+                    chatbotBtn.style.backgroundColor = '#28a745'; // Green color to indicate continuous mode
+                } else {
+                    // Stop continuous mode
+                    isContinuousMode = false;
+                    stopRecording();
+                    chatbotBtn.style.backgroundColor = '#007bff'; // Return to original color
+                }
+            });
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                isContinuousMode = false;
+                chatbotBtn.style.backgroundColor = '#007bff';
+            };
+
+            ws.onclose = () => {
+                console.log('Disconnected from WebSocket server');
+                isContinuousMode = false;
+                chatbotBtn.style.backgroundColor = '#007bff';
+            };
+        });
+    </script>
+
+</body>
+</html>
