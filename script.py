@@ -16,6 +16,7 @@ from pydub.generators import Sine
 import openai
 from pydantic import BaseModel
 import uvicorn
+from typing import List  # Import List from typing for older Python versions
 
 # Ensure the ffmpeg path is set correctly
 os.environ["PATH"] += os.pathsep + "C:\\ffmpeg\\bin"
@@ -58,7 +59,7 @@ app.add_middleware(
 # Store active connections
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: list[WebSocket] = []
+        self.active_connections: List[WebSocket] = []  # Use List from typing
         self.listening_status: dict[WebSocket, bool] = {}
 
     async def connect(self, websocket: WebSocket):
